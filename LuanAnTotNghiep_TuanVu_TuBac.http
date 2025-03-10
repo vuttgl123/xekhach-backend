@@ -1,6 +1,9 @@
 @LuanAnTotNghiep_TuanVu_TuBac_HostAddress = http://localhost:5120
+@Render_HostAddress = https://test-backend-8gia.onrender.com
 
 GET {{LuanAnTotNghiep_TuanVu_TuBac_HostAddress}}/weatherforecast/
 Accept: application/json
 
-###
+### Kiểm tra API trên Render
+GET {{Render_HostAddress}}/weatherforecast/
+Accept: application/json

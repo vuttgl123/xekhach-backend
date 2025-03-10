@@ -1,7 +1,5 @@
 E:\baitap ASP\LuanAnTotNghiep_TuanVu_TuBac\LuanAnTotNghiep_TuanVu_TuBac\bin\Debug\net8.0\appsettings.Development.json
 E:\baitap ASP\LuanAnTotNghiep_TuanVu_TuBac\LuanAnTotNghiep_TuanVu_TuBac\bin\Debug\net8.0\appsettings.json
-E:\baitap ASP\LuanAnTotNghiep_TuanVu_TuBac\LuanAnTotNghiep_TuanVu_TuBac\bin\Debug\net8.0\frontend\package-lock.json
-E:\baitap ASP\LuanAnTotNghiep_TuanVu_TuBac\LuanAnTotNghiep_TuanVu_TuBac\bin\Debug\net8.0\frontend\package.json
 E:\baitap ASP\LuanAnTotNghiep_TuanVu_TuBac\LuanAnTotNghiep_TuanVu_TuBac\bin\Debug\net8.0\LuanAnTotNghiep_TuanVu_TuBac.exe
 E:\baitap ASP\LuanAnTotNghiep_TuanVu_TuBac\LuanAnTotNghiep_TuanVu_TuBac\bin\Debug\net8.0\LuanAnTotNghiep_TuanVu_TuBac.deps.json
 E:\baitap ASP\LuanAnTotNghiep_TuanVu_TuBac\LuanAnTotNghiep_TuanVu_TuBac\bin\Debug\net8.0\LuanAnTotNghiep_TuanVu_TuBac.runtimeconfig.json
@@ -170,3 +168,4 @@ E:\baitap ASP\LuanAnTotNghiep_TuanVu_TuBac\LuanAnTotNghiep_TuanVu_TuBac\obj\Debu
 E:\baitap ASP\LuanAnTotNghiep_TuanVu_TuBac\LuanAnTotNghiep_TuanVu_TuBac\obj\Debug\net8.0\ref\LuanAnTotNghiep_TuanVu_TuBac.dll
 E:\baitap ASP\LuanAnTotNghiep_TuanVu_TuBac\LuanAnTotNghiep_TuanVu_TuBac\bin\Debug\net8.0\BCrypt.Net-Next.dll
 E:\baitap ASP\LuanAnTotNghiep_TuanVu_TuBac\LuanAnTotNghiep_TuanVu_TuBac\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+E:\baitap ASP\LuanAnTotNghiep_TuanVu_TuBac\LuanAnTotNghiep_TuanVu_TuBac\obj\Debug\net8.0\LuanAnTotNghiep_TuanVu_TuBac.sourcelink.json

@@ -8,16 +8,18 @@ using LuanAnTotNghiep_TuanVu_TuBac.Repositories.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-// Add services to the container.
 
+// Add services to the container.
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddSingleton<JwtHelper>();
+
 // Cấu hình JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -40,30 +42,44 @@ builder.Logging.AddConsole();
 
 builder.Services.AddAuthorization();
 
+// 🌐 Cấu hình CORS cho Frontend (React)
+var allowedOrigins = new string[]
+{
+    "https://xekhach.click",
+    "https://www.xekhach.click",
+    "http://localhost:5173"
+};
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
         builder => builder
-            .WithOrigins("http://localhost:5173") // ✅ Đúng URL của frontend
-            .AllowCredentials() // ✅ BẮT BUỘC để cho phép gửi Cookie
+            .WithOrigins(allowedOrigins)
+            .AllowCredentials()
             .AllowAnyMethod()
             .AllowAnyHeader()
     );
 });
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// ✅ Bật Swagger trên cả môi trường Production
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseCors("AllowFrontend");
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication(); // 🔥 Thêm Authentication vào Middleware
 app.UseAuthorization();
+
+// ✅ Lắng nghe cổng từ biến môi trường (Render cấp cổng)
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5120";
+app.Urls.Add($"http://*:{port}");
+
+// ✅ Route mặc định kiểm tra API có chạy không
+app.MapGet("/", () => "🚀 API is running on Render!");
 
 app.MapControllers();
 
