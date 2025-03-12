@@ -33,16 +33,15 @@ namespace LuanAnTotNghiep_TuanVu_TuBac.Controllers
         public async Task<IActionResult> Login([FromBody] Models.DTOs.LoginRequest loginRequest)
         {
             var user = await _userRepository.GetUserByEmail(loginRequest.Email);
+
             if (user == null || !BCrypt.Net.BCrypt.Verify(loginRequest.Password, user.PasswordHash))
             {
-                _logger.LogWarning($"[Login Failed] Email: {loginRequest.Email}");
                 return Unauthorized(new { message = "Email hoặc mật khẩu không chính xác." });
             }
 
             var token = _jwtHelper.GenerateJwtToken(user);
             _jwtHelper.SetJwtCookie(Response, token);
 
-            _logger.LogInformation($"[Login Success] User: {user.Email}");
             return Ok(new { message = "Đăng nhập thành công!" });
         }
 
@@ -50,40 +49,57 @@ namespace LuanAnTotNghiep_TuanVu_TuBac.Controllers
         [HttpGet("me")]
         public async Task<IActionResult> GetUserProfile()
         {
-            var userId = _jwtHelper.ValidateJwtFromCookie(Request);
+            var userId = await _jwtHelper.ValidateJwtFromCookie(Request, _userRepository);
             if (userId == null)
             {
-                _logger.LogWarning("🚨 Token không hợp lệ hoặc không tìm thấy.");
                 return Unauthorized(new { message = "Chưa đăng nhập hoặc Token không hợp lệ." });
             }
 
             var user = await _userRepository.GetUserById(userId.Value);
             if (user == null)
             {
-                _logger.LogWarning($"🚨 Không tìm thấy User với ID: {userId}");
                 return NotFound(new { message = "User không tồn tại." });
             }
 
-            _logger.LogInformation($"✅ Lấy thông tin User: {user.Email}");
-            return Ok(user);
+            return Ok(new { id = user.Id, email = user.Email });
         }
 
+
         [HttpPost("logout")]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
+            if (!Request.Cookies.TryGetValue("jwt", out var token))
+            {
+                return Unauthorized(new { message = "Bạn chưa đăng nhập!" });
+            }
+
+            var userId = await _jwtHelper.ValidateJwtFromCookie(Request, _userRepository);
+            if (userId == null)
+            {
+                return Unauthorized(new { message = "Token không hợp lệ!" });
+            }
+
+            // ✅ Tăng TokenVersion để vô hiệu hóa tất cả token cũ
+            var user = await _userRepository.GetUserById(userId.Value);
+            if (user != null)
+            {
+                user.TokenVersion++;
+                await _userRepository.UpdateUserAsync(user);
+            }
+
+            // ✅ Xóa cookie JWT
             Response.Cookies.Append("jwt", "", new CookieOptions
             {
-                Expires = DateTime.UtcNow.AddDays(-1), // 🔥 Hết hạn ngay lập tức
-                Path = "/", // 🔥 Phải trùng với Path khi tạo cookie
-                Domain = "xekhach.click", // 🔥 Phải trùng với domain khi tạo cookie
+                Expires = DateTime.UtcNow.AddDays(-1),
+                Path = "/",
                 Secure = true,
                 HttpOnly = true,
                 SameSite = SameSiteMode.None
             });
 
-            _logger.LogInformation("✅ Đã đăng xuất thành công.");
-            return Ok(new { message = "Đăng xuất thành công." });
+            return Ok(new { message = "Đăng xuất thành công!" });
         }
+
 
 
 

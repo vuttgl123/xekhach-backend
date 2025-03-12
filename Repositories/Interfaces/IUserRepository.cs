@@ -12,5 +12,7 @@ namespace LuanAnTotNghiep_TuanVu_TuBac.Repositories.Interfaces
         Task AddUser(User user);
         Task UpdateUser(User user);
         Task DeleteUser(int id);
+
+        Task UpdateUserAsync(User user);
     }
 }

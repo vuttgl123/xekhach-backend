@@ -1,4 +1,5 @@
 ﻿using LuanAnTotNghiep_TuanVu_TuBac.Models.Entities;
+using LuanAnTotNghiep_TuanVu_TuBac.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -12,59 +13,52 @@ using System.Text;
 public class JwtHelper
 {
     private readonly IConfiguration _config;
-    private readonly ILogger<JwtHelper> _logger;
 
-    public JwtHelper(IConfiguration config, ILogger<JwtHelper> logger)
+    public JwtHelper(IConfiguration config)
     {
         _config = config;
-        _logger = logger;
     }
 
-    /// <summary> Tạo JWT Token </summary>
     public string GenerateJwtToken(User user)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
 
         var claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, user.Role.ToString())
+            new Claim("TokenVersion", user.TokenVersion.ToString()) // ✅ Thêm TokenVersion
         };
 
         var token = new JwtSecurityToken(
             _config["Jwt:Issuer"],
             _config["Jwt:Audience"],
             claims,
-            expires: DateTime.UtcNow.AddHours(3),
+            expires: DateTime.UtcNow.AddHours(1), // 🔥 Token hết hạn sau 1 giờ
             signingCredentials: credentials
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    /// <summary> Lưu JWT vào HttpOnly Cookie </summary>
     public void SetJwtCookie(HttpResponse response, string token)
     {
         var cookieOptions = new CookieOptions
         {
-            HttpOnly = true, // 🔒 Chặn truy cập từ JavaScript
-            Secure = true,  // ✅ Bắt buộc `true` khi chạy HTTPS
-            SameSite = SameSiteMode.None, // ✅ Bắt buộc dùng `None` khi `Secure=true`
-            Expires = DateTime.UtcNow.AddHours(1),
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.None,
+            Expires = DateTime.UtcNow.AddHours(1)
         };
 
         response.Cookies.Append("jwt", token, cookieOptions);
     }
 
-
-    /// <summary> Xác thực JWT từ Cookie </summary>
-    public int? ValidateJwtFromCookie(HttpRequest request)
+    public async Task<int?> ValidateJwtFromCookie(HttpRequest request, IUserRepository userRepository)
     {
         if (!request.Cookies.TryGetValue("jwt", out var token))
         {
-            _logger.LogWarning("🚨 Không tìm thấy JWT trong Cookie!");
             return null;
         }
 
@@ -84,12 +78,29 @@ public class JwtHelper
             }, out SecurityToken validatedToken);
 
             var userIdClaim = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier);
-            return userIdClaim != null ? int.Parse(userIdClaim.Value) : null;
+            var tokenVersionClaim = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == "TokenVersion");
+
+            if (userIdClaim == null || tokenVersionClaim == null)
+            {
+                return null;
+            }
+
+            int userId = Convert.ToInt32(userIdClaim.Value);
+            int tokenVersion = Convert.ToInt32(tokenVersionClaim.Value);
+
+            // ✅ Kiểm tra nếu TokenVersion trong database khớp với token
+            var user = await userRepository.GetUserById(userId);
+            if (user == null || user.TokenVersion != tokenVersion)
+            {
+                return null;
+            }
+
+            return userId;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            _logger.LogError($"🚨 Lỗi xác thực Token: {ex.Message}");
             return null;
         }
     }
 }
+
