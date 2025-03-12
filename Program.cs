@@ -64,10 +64,9 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // ✅ Bật Swagger trên cả môi trường Production
+app.UseCors("AllowFrontend");
 app.UseSwagger();
 app.UseSwaggerUI();
-
-app.UseCors("AllowFrontend");
 
 app.UseHttpsRedirection();
 
