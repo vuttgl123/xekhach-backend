@@ -71,10 +71,20 @@ namespace LuanAnTotNghiep_TuanVu_TuBac.Controllers
         [HttpPost("logout")]
         public IActionResult Logout()
         {
-            Response.Cookies.Delete("jwt"); // Xóa JWT cookie
+            Response.Cookies.Append("jwt", "", new CookieOptions
+            {
+                Expires = DateTime.UtcNow.AddDays(-1), // 🔥 Hết hạn ngay lập tức
+                Path = "/", // 🔥 Phải trùng với Path khi tạo cookie
+                Domain = "xekhach.click", // 🔥 Phải trùng với domain khi tạo cookie
+                Secure = true,
+                HttpOnly = true,
+                SameSite = SameSiteMode.None
+            });
+
             _logger.LogInformation("✅ Đã đăng xuất thành công.");
             return Ok(new { message = "Đăng xuất thành công." });
         }
+
 
 
         /// <summary>
