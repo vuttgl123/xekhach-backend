@@ -53,16 +53,9 @@ public class JwtHelper
             Secure = true,  // ✅ Bắt buộc `true` khi chạy HTTPS
             SameSite = SameSiteMode.None, // ✅ Bắt buộc dùng `None` khi `Secure=true`
             Expires = DateTime.UtcNow.AddHours(1),
-            Path = "/", // 🔥 Đảm bảo cookie áp dụng cho toàn bộ trang web
-            Domain = "xekhach.click" // 🔥 Cập nhật domain theo trang web của bạn
         };
 
-       if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
-    {
-        cookieOptions.Domain = null; // ✅ Để trình duyệt tự quyết định domain
-    }
-
-    response.Cookies.Append("jwt", token, cookieOptions);
+        response.Cookies.Append("jwt", token, cookieOptions);
     }
 
 
