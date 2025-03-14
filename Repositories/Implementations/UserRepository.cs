@@ -40,6 +40,12 @@ namespace LuanAnTotNghiep_TuanVu_TuBac.Repositories.Implementations
             return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email);
         }
 
+        public async Task<User?> GetUserByPhoneNumber(string phoneNumber)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
+        }
+
+
         /// <summary>
         /// Thêm người dùng mới
         /// </summary>

@@ -10,6 +10,7 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 using LuanAnTotNghiep_TuanVu_TuBac.Models.Entities;
 using LuanAnTotNghiep_TuanVu_TuBac.Repositories.Interfaces;
+using LuanAnTotNghiep_TuanVu_TuBac.Models.Enums;
 
 namespace LuanAnTotNghiep_TuanVu_TuBac.Controllers
 {
@@ -43,6 +44,47 @@ namespace LuanAnTotNghiep_TuanVu_TuBac.Controllers
             _jwtHelper.SetJwtCookie(Response, token);
 
             return Ok(new { message = "Đăng nhập thành công!" });
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] Models.DTOs.RegisterRequest registerRequest)
+        {
+            // Kiểm tra xem email đã tồn tại chưa
+            var existingUser = await _userRepository.GetUserByEmail(registerRequest.Email);
+            if (existingUser != null)
+            {
+                return BadRequest(new { message = "Email này đã được sử dụng." });
+            }
+
+            // Kiểm tra số điện thoại có bị trùng không
+            var existingPhoneNumber = await _userRepository.GetUserByPhoneNumber(registerRequest.PhoneNumber);
+            if (existingPhoneNumber != null)
+            {
+                return BadRequest(new { message = "Số điện thoại này đã được sử dụng." });
+            }
+
+            // Mã hóa mật khẩu
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(registerRequest.Password);
+
+            // Tạo user mới
+            var newUser = new User
+            {
+                Email = registerRequest.Email,
+                FullName = registerRequest.FullName,
+                PasswordHash = passwordHash,
+                Gender = registerRequest.Gender,
+                PhoneNumber = registerRequest.PhoneNumber,
+                Address = registerRequest.Address,
+                Role = (byte)UserRole.User, // Sử dụng Enum để tránh lỗi kiểu dữ liệu
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                TokenVersion = 1
+            };
+
+            await _userRepository.AddUser(newUser);
+
+            return Ok(new { message = "Đăng ký thành công! Vui lòng đăng nhập." });
         }
 
         /// <summary> API Lấy thông tin người dùng từ JWT </summary>

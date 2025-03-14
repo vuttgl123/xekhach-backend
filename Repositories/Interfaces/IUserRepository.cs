@@ -9,6 +9,7 @@ namespace LuanAnTotNghiep_TuanVu_TuBac.Repositories.Interfaces
         Task<IEnumerable<User>> GetAllUsers();
         Task<User> GetUserById(int id);
         Task<User> GetUserByEmail(string email);
+        Task<User?> GetUserByPhoneNumber(string phoneNumber);
         Task AddUser(User user);
         Task UpdateUser(User user);
         Task DeleteUser(int id);
