@@ -72,6 +72,22 @@
   },
   {
     "ContainingType": "LuanAnTotNghiep_TuanVu_TuBac.Controllers.UsersController",
+    "Method": "ForgotPassword",
+    "RelativePath": "api/Users/forgot-password",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "LuanAnTotNghiep_TuanVu_TuBac.Models.DTOs.ForgotPasswordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "LuanAnTotNghiep_TuanVu_TuBac.Controllers.UsersController",
     "Method": "Login",
     "RelativePath": "api/Users/login",
     "HttpMethod": "POST",
@@ -117,6 +133,38 @@
       {
         "Name": "registerRequest",
         "Type": "LuanAnTotNghiep_TuanVu_TuBac.Models.DTOs.RegisterRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "LuanAnTotNghiep_TuanVu_TuBac.Controllers.UsersController",
+    "Method": "ResetPassword",
+    "RelativePath": "api/Users/reset-password",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "LuanAnTotNghiep_TuanVu_TuBac.Models.DTOs.ResetPasswordRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "LuanAnTotNghiep_TuanVu_TuBac.Controllers.UsersController",
+    "Method": "VerifyOtp",
+    "RelativePath": "api/Users/verify-otp",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "LuanAnTotNghiep_TuanVu_TuBac.Models.DTOs.VerifyOtpRequest",
         "IsRequired": true
       }
     ],

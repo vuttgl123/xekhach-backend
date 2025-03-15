@@ -169,3 +169,8 @@ E:\baitap ASP\LuanAnTotNghiep_TuanVu_TuBac\LuanAnTotNghiep_TuanVu_TuBac\obj\Debu
 E:\baitap ASP\LuanAnTotNghiep_TuanVu_TuBac\LuanAnTotNghiep_TuanVu_TuBac\bin\Debug\net8.0\BCrypt.Net-Next.dll
 E:\baitap ASP\LuanAnTotNghiep_TuanVu_TuBac\LuanAnTotNghiep_TuanVu_TuBac\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 E:\baitap ASP\LuanAnTotNghiep_TuanVu_TuBac\LuanAnTotNghiep_TuanVu_TuBac\obj\Debug\net8.0\LuanAnTotNghiep_TuanVu_TuBac.sourcelink.json
+E:\baitap ASP\LuanAnTotNghiep_TuanVu_TuBac\LuanAnTotNghiep_TuanVu_TuBac\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
+E:\baitap ASP\LuanAnTotNghiep_TuanVu_TuBac\LuanAnTotNghiep_TuanVu_TuBac\bin\Debug\net8.0\MailKit.dll
+E:\baitap ASP\LuanAnTotNghiep_TuanVu_TuBac\LuanAnTotNghiep_TuanVu_TuBac\bin\Debug\net8.0\MimeKit.dll
+E:\baitap ASP\LuanAnTotNghiep_TuanVu_TuBac\LuanAnTotNghiep_TuanVu_TuBac\bin\Debug\net8.0\System.Security.Cryptography.Pkcs.dll
+E:\baitap ASP\LuanAnTotNghiep_TuanVu_TuBac\LuanAnTotNghiep_TuanVu_TuBac\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll

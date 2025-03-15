@@ -76,7 +76,6 @@ namespace LuanAnTotNghiep_TuanVu_TuBac.Repositories.Implementations
             existingUser.UpdatedAt = DateTime.UtcNow;
             existingUser.IsActive = user.IsActive;
             existingUser.Role = user.Role;
-
             await _context.SaveChangesAsync();
         }
 

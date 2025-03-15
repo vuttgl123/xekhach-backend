@@ -47,5 +47,7 @@ namespace LuanAnTotNghiep_TuanVu_TuBac.Models.Entities
         public byte? Role { get; set; }
 
         public int TokenVersion { get; set; } = 1;
+        public string? OtpCode { get; set; }
+        public DateTime? OtpExpiry { get; set; }
     }
 }

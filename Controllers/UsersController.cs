@@ -11,6 +11,8 @@ using Microsoft.Extensions.Logging;
 using LuanAnTotNghiep_TuanVu_TuBac.Models.Entities;
 using LuanAnTotNghiep_TuanVu_TuBac.Repositories.Interfaces;
 using LuanAnTotNghiep_TuanVu_TuBac.Models.Enums;
+using LuanAnTotNghiep_TuanVu_TuBac.Services.Interfaces;
+using LuanAnTotNghiep_TuanVu_TuBac.Models.DTOs;
 
 namespace LuanAnTotNghiep_TuanVu_TuBac.Controllers
 {
@@ -142,7 +144,58 @@ namespace LuanAnTotNghiep_TuanVu_TuBac.Controllers
             return Ok(new { message = "Đăng xuất thành công!" });
         }
 
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword(
+            [FromBody] LuanAnTotNghiep_TuanVu_TuBac.Models.DTOs.ForgotPasswordRequest request,
+            [FromServices] IEmailService emailService)
+        {
+            var user = await _userRepository.GetUserByEmail(request.Email);
+            if (user == null)
+            {
+                return BadRequest(new { message = "Email không tồn tại trong hệ thống." });
+            }
 
+            // ✅ Tạo mã OTP 6 số
+            var otp = new Random().Next(100000, 999999).ToString();
+            user.OtpCode = otp;
+            user.OtpExpiry = DateTime.UtcNow.AddMinutes(5); // Hết hạn sau 5 phút
+            await _userRepository.UpdateUserAsync(user);
+
+            // ✅ Gửi email OTP
+            var emailMessage = $"<h3>OTP của bạn là: <b>{otp}</b></h3><p>OTP có hiệu lực trong 5 phút.</p>";
+            await emailService.SendEmailAsync(user.Email, "Xác nhận OTP - Quên Mật Khẩu", emailMessage);
+
+            return Ok(new { message = "Đã gửi mã OTP đến email của bạn." });
+        }
+
+        [HttpPost("verify-otp")]
+        public async Task<IActionResult> VerifyOtp([FromBody] VerifyOtpRequest request)
+        {
+            var user = await _userRepository.GetUserByEmail(request.Email);
+            if (user == null || user.OtpCode != request.OtpCode || user.OtpExpiry < DateTime.UtcNow)
+            {
+                return BadRequest(new { message = "OTP không hợp lệ hoặc đã hết hạn." });
+            }
+
+            return Ok(new { message = "Xác thực OTP thành công. Vui lòng đặt lại mật khẩu mới." });
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] Models.DTOs.ResetPasswordRequest request)
+        {
+            var user = await _userRepository.GetUserByEmail(request.Email);
+            if (user == null || user.OtpExpiry < DateTime.UtcNow)
+            {
+                return BadRequest(new { message = "Yêu cầu đặt lại mật khẩu không hợp lệ hoặc đã hết hạn." });
+            }
+
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            user.OtpCode = null;
+            user.OtpExpiry = null;
+            await _userRepository.UpdateUser(user);
+
+            return Ok(new { message = "Mật khẩu đã được cập nhật thành công!" });
+        }
 
 
         /// <summary>

@@ -5,6 +5,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using LuanAnTotNghiep_TuanVu_TuBac.Repositories.Interfaces;
 using LuanAnTotNghiep_TuanVu_TuBac.Repositories.Implementations;
+using LuanAnTotNghiep_TuanVu_TuBac.Services.Implementations;
+using LuanAnTotNghiep_TuanVu_TuBac.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -19,6 +21,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddSingleton<JwtHelper>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 // Cấu hình JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
