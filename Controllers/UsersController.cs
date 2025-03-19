@@ -105,9 +105,53 @@ namespace LuanAnTotNghiep_TuanVu_TuBac.Controllers
                 return NotFound(new { message = "User không tồn tại." });
             }
 
-            return Ok(new { id = user.Id, email = user.Email });
+            // Chuyển đổi sang DTO
+            var userResponse = new UserResponse
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FullName = user.FullName,
+                PhoneNumber = user.PhoneNumber,
+                BirthDate = user.BirthDate?.ToString("yyyy-MM-dd"),
+                Gender = user.Gender,
+                Address = user.Address
+            };
+
+            return Ok(userResponse);
         }
 
+        [HttpPut("me")]
+        public async Task<IActionResult> UpdateUserProfile([FromBody] UpdateUserRequest request)
+        {
+            var userId = await _jwtHelper.ValidateJwtFromCookie(Request, _userRepository);
+            if (userId == null)
+            {
+                return Unauthorized(new { message = "Chưa đăng nhập hoặc Token không hợp lệ." });
+            }
+
+            var user = await _userRepository.GetUserById(userId.Value);
+            if (user == null)
+            {
+                return NotFound(new { message = "User không tồn tại." });
+            }
+
+            // Cập nhật các trường cho phép sửa đổi
+            user.FullName = request.FullName;
+            user.PhoneNumber = request.PhoneNumber;
+            user.BirthDate = request.BirthDate;
+            user.Gender = request.Gender;
+            user.Address = request.Address;
+            user.UpdatedAt = DateTime.UtcNow;
+
+            // Gọi repository để cập nhật
+            var result = await _userRepository.UpdateUser(user);
+            if (!result)
+            {
+                return StatusCode(500, new { message = "Lỗi khi cập nhật thông tin." });
+            }
+
+            return Ok(new { message = "Cập nhật thông tin thành công." });
+        }
 
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
@@ -192,59 +236,12 @@ namespace LuanAnTotNghiep_TuanVu_TuBac.Controllers
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
             user.OtpCode = null;
             user.OtpExpiry = null;
-            await _userRepository.UpdateUser(user);
+            await _userRepository.UpdateUserAsync(user);
 
             return Ok(new { message = "Mật khẩu đã được cập nhật thành công!" });
         }
 
-
-        /// <summary>
-        /// Tạo người dùng mới với mật khẩu được mã hóa
-        /// </summary>
-        [HttpPost]
-        public async Task<IActionResult> CreateUser(User user)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            // Mã hóa mật khẩu trước khi lưu
-            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash);
-
-            await _userRepository.AddUser(user);
-            return CreatedAtAction(nameof(GetUserProfile), new { id = user.Id }, user);
-        }
-
-        /// <summary>
-        /// Cập nhật thông tin người dùng
-        /// </summary>
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, User user)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            if (user.Id == 0)
-                user.Id = id;
-            else if (id != user.Id)
-                return BadRequest(new { message = "ID in URL does not match ID in body." });
-
-            var existingUser = await _userRepository.GetUserById(id);
-            if (existingUser == null)
-                return NotFound(new { message = "User not found." });
-
-            // Nếu mật khẩu mới được cung cấp, mã hóa nó
-            if (!string.IsNullOrEmpty(user.PasswordHash))
-            {
-                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash);
-            }
-            else
-            {
-                user.PasswordHash = existingUser.PasswordHash; // Giữ nguyên mật khẩu cũ
-            }
-
-            await _userRepository.UpdateUser(user);
-            return NoContent();
-        }
+       
 
         /// <summary>
         /// Xóa người dùng theo ID

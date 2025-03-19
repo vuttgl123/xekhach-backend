@@ -58,27 +58,11 @@ namespace LuanAnTotNghiep_TuanVu_TuBac.Repositories.Implementations
         /// <summary>
         /// Cập nhật thông tin người dùng
         /// </summary>
-        public async Task UpdateUser(User user)
+        public async Task<bool> UpdateUser(User user)
         {
-            var existingUser = await _context.Users.FindAsync(user.Id);
-            if (existingUser == null)
-            {
-                throw new InvalidOperationException($"User với ID {user.Id} không tồn tại.");
-            }
-
-            // Cập nhật chỉ các trường cần thiết
-            existingUser.Email = user.Email;
-            existingUser.PasswordHash = user.PasswordHash;
-            existingUser.FullName = user.FullName;
-            existingUser.Gender = user.Gender;
-            existingUser.PhoneNumber = user.PhoneNumber;
-            existingUser.Address = user.Address;
-            existingUser.UpdatedAt = DateTime.UtcNow;
-            existingUser.IsActive = user.IsActive;
-            existingUser.Role = user.Role;
-            await _context.SaveChangesAsync();
+            _context.Users.Update(user);
+            return await _context.SaveChangesAsync() > 0;
         }
-
         /// <summary>
         /// Xóa người dùng theo ID
         /// </summary>
