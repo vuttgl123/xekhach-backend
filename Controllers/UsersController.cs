@@ -77,7 +77,6 @@ namespace LuanAnTotNghiep_TuanVu_TuBac.Controllers
                 Gender = registerRequest.Gender,
                 PhoneNumber = registerRequest.PhoneNumber,
                 Address = registerRequest.Address,
-                Role = (byte)UserRole.User, // Sử dụng Enum để tránh lỗi kiểu dữ liệu
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
@@ -239,22 +238,6 @@ namespace LuanAnTotNghiep_TuanVu_TuBac.Controllers
             await _userRepository.UpdateUserAsync(user);
 
             return Ok(new { message = "Mật khẩu đã được cập nhật thành công!" });
-        }
-
-       
-
-        /// <summary>
-        /// Xóa người dùng theo ID
-        /// </summary>
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
-        {
-            var existingUser = await _userRepository.GetUserById(id);
-            if (existingUser == null)
-                return NotFound(new { message = "User not found." });
-
-            await _userRepository.DeleteUser(id);
-            return NoContent();
         }
     }
 }

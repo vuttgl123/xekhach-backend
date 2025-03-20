@@ -19,22 +19,6 @@
   },
   {
     "ContainingType": "LuanAnTotNghiep_TuanVu_TuBac.Controllers.UsersController",
-    "Method": "DeleteUser",
-    "RelativePath": "api/Users/{id}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "id",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "LuanAnTotNghiep_TuanVu_TuBac.Controllers.UsersController",
     "Method": "ForgotPassword",
     "RelativePath": "api/Users/forgot-password",
     "HttpMethod": "POST",

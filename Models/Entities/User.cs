@@ -49,8 +49,6 @@ namespace LuanAnTotNghiep_TuanVu_TuBac.Models.Entities
 
         [Required(ErrorMessage = "Vai trò không được để trống")]
         [Range(0, 2, ErrorMessage = "Vai trò chỉ có thể là 0 (User), 1 (Admin), 2 (Driver)")]
-        public byte? Role { get; set; }
-
         public int TokenVersion { get; set; } = 1;
         public string? OtpCode { get; set; }
         public DateTime? OtpExpiry { get; set; }
