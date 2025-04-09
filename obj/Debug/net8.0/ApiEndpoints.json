@@ -18,6 +18,52 @@
     ]
   },
   {
+    "ContainingType": "LuanAnTotNghiep_TuanVu_TuBac.Controllers.DriverController",
+    "Method": "GetDriverFromVehicleDriverId",
+    "RelativePath": "api/driver/fromVehicleDriver/{vehicleDriverId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "vehicleDriverId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "LuanAnTotNghiep_TuanVu_TuBac.Models.Entities.Driver",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "LuanAnTotNghiep_TuanVu_TuBac.Controllers.PromotionsController",
+    "Method": "GetActivePromotions",
+    "RelativePath": "api/Promotions/active",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[LuanAnTotNghiep_TuanVu_TuBac.Models.Entities.Promotion, LuanAnTotNghiep_TuanVu_TuBac, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "LuanAnTotNghiep_TuanVu_TuBac.Controllers.RideController",
     "Method": "Create",
     "RelativePath": "api/Ride",
@@ -31,6 +77,16 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "LuanAnTotNghiep_TuanVu_TuBac.Controllers.TripController",
+    "Method": "RefreshSchedules",
+    "RelativePath": "api/Trip/refresh-schedules",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {

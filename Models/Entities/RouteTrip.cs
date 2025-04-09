@@ -9,8 +9,8 @@
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
         public string Status { get; set; } // "HN-ĐN", "NĐ-HN", "Nghỉ"
-        public int VehicleDriverId { get; set; }
-        public int AdminId { get; set; }
+        public int? VehicleDriverId { get; set; }
+        public int? AdminId { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 

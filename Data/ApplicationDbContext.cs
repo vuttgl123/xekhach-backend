@@ -30,5 +30,9 @@ namespace LuanAnTotNghiep_TuanVu_TuBac.Data
         public DbSet<RouteTrip> RouteTrips { get; set; }
         public DbSet<RouteTripSchedule> RouteTripSchedules { get; set; }
         public DbSet<Ride> Rides { get; set; }
+        public DbSet<Driver> Drivers { get; set; }          
+        public DbSet<VehicleDriver> VehicleDrivers { get; set; }
+
+        public DbSet<Promotion> Promotions { get; set; }
     }
 }
