@@ -21,5 +21,8 @@
         public string BankName { get; set; }       // Tên ngân hàng
         public string FullName { get; set; }       // Họ và tên
         public string OperatingArea { get; set; }  // Khu vực hoạt động
+        public int? CreatedByAdminId { get; set; }
+        public int? UpdatedByAdminId { get; set; }
+
     }
 }

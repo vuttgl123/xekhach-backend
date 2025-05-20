@@ -1,4 +1,4 @@
-﻿namespace LuanAnTotNghiep_TuanVu_TuBac.Models.DTOs
+﻿namespace LuanAnTotNghiep_TuanVu_TuBac.DTOs
 {
     public class CreateRideRequest
     {
@@ -8,7 +8,10 @@
         public string DropoffLocation { get; set; }
         public decimal EstimatedFare { get; set; }
         public bool IsRoundTrip { get; set; }
-        public double DistanceKm { get; set; }
+        public decimal DistanceKm { get; set; }
         public int? ReturnRouteTripScheduleId { get; set; }
+
+        public int TicketCountGo { get; set; }  // Số vé lượt đi
+        public int TicketCountReturn { get; set; } // Số vé lượt về (nếu có)
     }
 }

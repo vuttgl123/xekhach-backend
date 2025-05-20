@@ -8,6 +8,7 @@ using LuanAnTotNghiep_TuanVu_TuBac.Repositories.Implementations;
 using LuanAnTotNghiep_TuanVu_TuBac.Services.Implementations;
 using LuanAnTotNghiep_TuanVu_TuBac.Services.Interfaces;
 
+
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -24,6 +25,11 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRouteTripScheduleRepository, RouteTripScheduleRepository>();
 builder.Services.AddScoped<IPromotionService, PromotionService>();
 builder.Services.AddScoped<IRideRepository, RideRepository>();
+builder.Services.AddScoped<IRatingRepository, RatingRepository>();
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+
+
 builder.Services.AddSingleton<JwtHelper>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 

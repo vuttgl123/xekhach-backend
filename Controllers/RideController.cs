@@ -1,74 +1,75 @@
-﻿using LuanAnTotNghiep_TuanVu_TuBac.Models.DTOs;
-using LuanAnTotNghiep_TuanVu_TuBac.Models.Entities;
+﻿using Microsoft.AspNetCore.Mvc;
+using LuanAnTotNghiep_TuanVu_TuBac.DTOs;
 using LuanAnTotNghiep_TuanVu_TuBac.Repositories.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+using LuanAnTotNghiep_TuanVu_TuBac.Models.DTOs;
 
 namespace LuanAnTotNghiep_TuanVu_TuBac.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class RideController : ControllerBase
+    public class RidesController : ControllerBase
     {
         private readonly IRideRepository _rideRepository;
-        private readonly IRouteTripScheduleRepository _scheduleRepository;
 
-        public RideController(IRideRepository rideRepository, IRouteTripScheduleRepository scheduleRepository)
+        public RidesController(IRideRepository rideRepository)
         {
             _rideRepository = rideRepository;
-            _scheduleRepository = scheduleRepository;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateRideRequest request)
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateRide([FromBody] CreateRideRequest request)
         {
-            var schedule = await _scheduleRepository.GetByIdAsync(request.RouteTripScheduleId);
-            if (schedule == null || schedule.AvailableSeats <= 0)
+            try
             {
-                return BadRequest(new { message = "Lịch trình đi không hợp lệ hoặc đã hết ghế." });
-            }
+                var rideId = await _rideRepository.CreateRideAsync(request);
 
-            var ride = new Ride
-            {
-                UserId = request.UserId,
-                RouteTripScheduleId = request.RouteTripScheduleId,
-                PickupLocation = request.PickupLocation,
-                DropoffLocation = request.DropoffLocation,
-                EstimatedFare = request.EstimatedFare,
-                Status = 0,
-                IsRoundTrip = request.IsRoundTrip,
-                DistanceKm = (decimal)request.DistanceKm,
-                VehicleDriverId = schedule.VehicleDriverId,
-                CreatedAt = DateTime.UtcNow
-            };
-
-            Ride? returnRide = null;
-
-            if (request.IsRoundTrip && request.ReturnRouteTripScheduleId.HasValue)
-            {
-                var returnSchedule = await _scheduleRepository.GetByIdAsync(request.ReturnRouteTripScheduleId.Value);
-                if (returnSchedule == null || returnSchedule.AvailableSeats <= 0)
+                return Ok(new
                 {
-                    return BadRequest(new { message = "Lịch trình về không hợp lệ hoặc đã hết ghế." });
-                }
-
-                returnRide = new Ride
-                {
-                    UserId = request.UserId,
-                    RouteTripScheduleId = request.ReturnRouteTripScheduleId.Value,
-                    PickupLocation = request.DropoffLocation,
-                    DropoffLocation = request.PickupLocation,
-                    EstimatedFare = request.EstimatedFare,
-                    Status = 0,
-                    IsRoundTrip = false, // Lượt về không cần gắn lại khứ hồi
-                    DistanceKm = (decimal)request.DistanceKm,
-                    VehicleDriverId = returnSchedule.VehicleDriverId,
-                    CreatedAt = DateTime.UtcNow
-                };
+                    message = "✅ Đặt vé thành công",
+                    rideId = rideId
+                });
             }
-
-            var result = await _rideRepository.CreateAsync(ride, returnRide);
-            return Ok(result);
+            catch (Exception ex)
+            {
+                var inner = ex.InnerException?.Message ?? ex.Message;
+                return BadRequest(new
+                {
+                    message = "❌ Đặt vé thất bại",
+                    error = ex.Message
+                });
+            }
         }
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetRidesByUserId(int userId)
+        {
+            try
+            {
+                var rides = await _rideRepository.GetRidesByUserIdAsync(userId);
+
+                return Ok(rides.Select(r => new
+                {
+                    r.Id,
+                    r.PickupLocation,
+                    r.DropoffLocation,
+                    r.PickupTime,
+                    r.DropoffTime,
+                    r.EstimatedFare,
+                    r.Status,
+                    r.IsRoundTrip,
+                    r.TicketCountGo,
+                    r.TicketCountReturn,
+                    r.RouteTripScheduleId,
+                    PaymentMethod = r.Payment?.PaymentMethod,
+                    PaymentTime = r.Payment?.CreatedAt
+                }));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "Lỗi khi lấy danh sách vé", error = ex.Message });
+            }
+        }
+
+
 
     }
 }

@@ -35,12 +35,12 @@ namespace LuanAnTotNghiep_TuanVu_TuBac.Controllers
             return Ok(result);
         }
 
-        [HttpPost("refresh-schedules")]
-        public async Task<IActionResult> RefreshSchedules()
-        {
-            await _scheduleRepo.RefreshSchedulesAsync();
-            return Ok("Đã làm mới lịch cho 5 ngày tới.");
-        }
+        //[HttpPost("refresh-schedules")]
+        //public async Task<IActionResult> RefreshSchedules()
+        //{
+        //    await _scheduleRepo.RefreshSchedulesAsync();
+        //    return Ok("Đã làm mới lịch cho 5 ngày tới.");
+        //}
 
 
 

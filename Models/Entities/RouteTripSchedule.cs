@@ -12,6 +12,8 @@
         public DateTime CreatedAt { get; set; }
 
         public RouteTrip RouteTrip { get; set; }
+
+        public VehicleDriver VehicleDriver { get; set; }
     }
 
 

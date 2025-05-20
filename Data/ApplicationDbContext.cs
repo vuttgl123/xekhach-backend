@@ -25,6 +25,11 @@ namespace LuanAnTotNghiep_TuanVu_TuBac.Data
                 .HasOne(r => r.RouteTripSchedule)
                 .WithMany()
                 .HasForeignKey(r => r.RouteTripScheduleId);
+
+            modelBuilder.Entity<RouteTripSchedule>()
+                .HasOne(rts => rts.VehicleDriver)
+                .WithMany(vd => vd.RouteTripSchedules)
+                .HasForeignKey(rts => rts.VehicleDriverId);
         }
         public DbSet<User> Users { get; set; }
         public DbSet<RouteTrip> RouteTrips { get; set; }
@@ -34,5 +39,14 @@ namespace LuanAnTotNghiep_TuanVu_TuBac.Data
         public DbSet<VehicleDriver> VehicleDrivers { get; set; }
 
         public DbSet<Promotion> Promotions { get; set; }
+
+        public DbSet<Rating> Ratings { get; set; }
+
+        public DbSet<Payment> Payments { get; set; }
+
+        public DbSet<Notification> Notifications { get; set; }
+
+        public DbSet<Admin> Admins { get; set; }
     }
+
 }

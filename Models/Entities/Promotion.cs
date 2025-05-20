@@ -13,5 +13,6 @@ namespace LuanAnTotNghiep_TuanVu_TuBac.Models.Entities
         public PromotionStatus Status { get; set; }
         public int UsedCount { get; set; }
         public decimal MinRideAmount { get; set; }
+
     }
 }

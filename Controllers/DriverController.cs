@@ -1,5 +1,5 @@
 ﻿using LuanAnTotNghiep_TuanVu_TuBac.Data;
-using LuanAnTotNghiep_TuanVu_TuBac.Models.Entities;
+using LuanAnTotNghiep_TuanVu_TuBac.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,32 +16,39 @@ namespace LuanAnTotNghiep_TuanVu_TuBac.Controllers
             _context = context;
         }
 
-        // API lấy thông tin tài xế từ vehicleDriverId
         [HttpGet("fromVehicleDriver/{vehicleDriverId}")]
-        public async Task<ActionResult<Driver>> GetDriverFromVehicleDriverId(int vehicleDriverId)
+        public async Task<ActionResult<DriverForCustomerResponse>> GetDriverFromVehicleDriverId(int vehicleDriverId)
         {
-            // Lấy thông tin từ bảng dbo.VehicleDrivers
             var vehicleDriver = await _context.VehicleDrivers
-                .Where(vd => vd.Id == vehicleDriverId)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(vd => vd.Id == vehicleDriverId);
 
             if (vehicleDriver == null)
             {
                 return NotFound(new { message = "VehicleDriver not found" });
             }
 
-            // Lấy thông tin tài xế từ bảng dbo.Drivers dựa trên DriverId từ vehicleDriver
             var driver = await _context.Drivers
-                .Where(d => d.Id == vehicleDriver.DriverId)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(d => d.Id == vehicleDriver.DriverId);
 
             if (driver == null)
             {
                 return NotFound(new { message = "Driver not found" });
             }
 
-            // Trả về thông tin tài xế
-            return Ok(driver);
+            var response = new DriverForCustomerResponse
+            {
+                Id = driver.Id,
+                FullName = driver.FullName,
+                VehicleType = driver.VehicleType,
+                AvatarUrl = driver.AvatarUrl,
+                PhoneNumber = driver.PhoneNumber, // ✅ Hiển thị rõ như bạn yêu cầu
+                LicenseType = driver.LicenseType,
+                LicenseExpiryDate = driver.LicenseExpiryDate,
+                OperatingArea = driver.OperatingArea
+            };
+
+            return Ok(response);
         }
+
     }
 }
